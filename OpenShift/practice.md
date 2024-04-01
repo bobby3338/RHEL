@@ -71,7 +71,7 @@ Use the registry.ocp4.example.com:8443/ubi8/nginx-118:1 container image.
 Copy the ~/DO188/labs/comprehensive-review/beeper-ui/nginx.conf host file into the /etc/nginx/ directory of the execution stage.
   COPY ~/DO188/labs/comprehensive-review/beeper-ui/nginx.conf /etc/nginx/
 Copy the built application artifacts from the builder stage into the /usr/share/nginx/html directory of the execution stage.
-  COPY --from=builder /opt/app-root/src /usr/share/nginx/html
+  COPY --from=builder /opt/app-root/src/build /usr/share/nginx/html
 Use the nginx -g "daemon off;" command to start the application.
   COMMAND nginx -g "daemon off;"
 Tag the image with beeper-ui:v1.
