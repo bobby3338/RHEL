@@ -113,4 +113,137 @@ Solution:
   USER duffman
   CMD ["/skeeter.sh"]
   podman build --layers=false -t skeeter:1.0 .
-  podman run -d --name mosquitto-1 -p 1883:11883 localhost/skeeter:1.0
+  podman run -d --name mosquitto-1 -p 1883:11883 localhost/skeeter:1.03
+
+TASK8:
+  Use the MariaDB container from task 3.
+  Refactor your configuration in such a way that you create four Podman secrets:
+  mysql_user: "duffman", from file ~/mysql_user
+  mysql_password: "saysoyeah", from file ~/mysql_password
+  mysql_root_password: "SQLp4ss", from file ~/mysql_root_password
+mysql_database: "beer", from file ~/mysql_database
+Run the container in the background, with the following parameters:
+u will again use the image "mariadb" from the registry on registry.do180.lab.
+Give the container the name secretsdb.
+Publish port 3306 on external port 3307.
+The variables for database startup should be set as secret environment variables.
+MYSQL_USER
+MYSQL_PASSWORD
+MYSQL_ROOT_PASSWORD
+MYSQL_DATABASE
+Once the container is up and running, prove that your settings are correctly applied.
+Connect to your database as the root user and check for the existence of the beer database:
+echo "show databases;" | mysql -uduffman -h 0.0.0.0 -psaysoyeah -P 3307
+Run the command located in /sql/beer.sql to insert values into the database.
+mysql -uroot -h 0.0.0.0 -pSQLp4ss -P 3307 < /sql/beer.sql.
+
+echo -n "duffman" > ~/mysql_user
+echo -n "saysoyeah" > ~/mysql_password
+echo -n "SQLp4ss" > ~/mysql_root_password
+echo -n "beer" > ~/mysql_database
+
+podman secret create -d=file mysql_user ~/mysql_user
+podman secret create -d=file mysql_password ~/mysql_password
+podman secret create -d=file mysql_root_password ~/mysql_root_password
+podman secret create -d=file mysql_database ~/mysql_database
+
+podman run -d --name secretsdb \
+        -p 3307:3306 \
+        --secret mysql_user,type=env,target=MYSQL_USER \
+        --secret mysql_password,type=env,target=MYSQL_PASSWORD \
+        --secret mysql_root_password,type=env,target=MYSQL_ROOT_PASSWORD \
+        --secret mysql_database,type=env,target=MYSQL_DATABASE \
+        registry:5000/mariadb
+
+TASK9:
+Create a Dockerfile which creates a container image with the following requirements. Store the Dockerfile as ~/task9.dockerfile.
+Based on centos:7.
+During the build, create a user account.
+"joe" must be the default user.
+Read an argument during build-time to override the name "joe".
+The container must run "whoami" to show the active user.
+NOTE: Arguments are NOT passed during runtime of the container! They are passed during the container build.
+Create two container images using this Dockerfile, named hello-joe:1.0 and hello-lisa:1.0.
+When run, they should respectively output "joe" and "lisa".
+
+
+FROM centos:7
+
+ARG buildname
+ENV buildname=${buildname:-joe}
+
+RUN useradd -m $buildname
+USER $buildname
+
+CMD ["whoami"]
+
+podman build -t hello-joe:1.0 -f task9.dockerfile .
+
+podman build --build-arg buildname=lisa -t hello-lisa:1.0 -f task9.dockerfile .
+
+podman run -ti --name joe hello-joe:1.0
+podman run -ti --name lisa hello-lisa:1.0
+
+TASK10:
+Use the incomplete Podman Stack file located in /dockerfiles/voting/docker-compose.yml. Use the comments in the file to guide you through the process of creating a Podman Stack with the following requirements:
+There are two networks: front-end (of type bridge) and back-end (of type internal).
+There is one volume: db-data
+The Stack consists of five services:
+Using the "redis" image, named "redis", in network "front-end"
+Using the "postgres:9.4" image, named "db", in network "back-end", with volume "db-data" mounted on /var/postgres.
+The Postgres container needs to have two environment variables: POSTGRES_USER and POSTGRES_PASSWORD, both set to "postgres".
+Using the "dockersamples/examplevotingapp_vote" image, named "vote", in networks "back-end" and in "front-end".
+The "vote" container exposes port 5000 on public port 5000. It depends on "redis".
+Using the "dockersamples/examplevotingapp_result" image, named "result", in networks "back-end" and in "front-end".
+The "vote" container exposes port 5001 on public port 5001. It depends on "db".
+Using the "dockersamples/examplevotingapp_worker" image, named "worker", in networks "back-end" and "front-end".
+The "worker" container depends on both "db" and "redis".
+
+version: "3" 
+services:
+  redis:
+    image: redis
+    networks:
+      - back-end
+  db:
+    image: postgres:9.4
+    networks:
+      - back-end
+    environment: 
+      - POSTGRES_USER=postgres 
+      - POSTGRES_PASSWORD=postgres 
+    volumes: 
+      - db-data:/var/postgres
+  vote:
+    image: dockersamples/examplevotingapp_vote
+    networks:
+      - front-end
+      - back-end
+    depends_on:
+      - redis
+    ports:
+      - "5000:80" 
+  result:
+    image: dockersamples/examplevotingapp_result
+    networks:
+      - front-end
+      - back-end
+    depends_on:
+      - db
+    ports:
+      - "5001:80" 
+  worker:
+    image: dockersamples/examplevotingapp_worker
+    networks:
+      - back-end
+    depends_on:
+      - db
+      - redis
+networks:
+  front-end:
+    driver: bridge
+  back-end:
+    internal: true
+volumes:
+  db-data:
+    driver: local
