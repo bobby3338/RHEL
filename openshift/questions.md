@@ -7,11 +7,23 @@ TASK1:
 
 Solution:
 podman run --name=reg-httpd -d -p 8080:80 -v /web:/usr/local/apache2/htdocs:Z registry.do180.lab:5000/httpd
-podman generate systemd -n reg-httpd -f > reg-httpd.service
+podman generate systemd --name reg-httpd --new --files 
 systemctl enable reg-httpd.service
 systemctl start reg-httpd.service
 systemctl status reg-httpd.service
+loginctl enable-linger
+loginctl enable-linger <username>
+$HOME/.config/systemd/user
+$ podman pod create --name systemd-pod
+$ podman create --pod systemd-pod alpine top
+$ podman create --pod systemd-pod alpine top
+$ podman generate systemd --files --name systemd-pod
+systemctl --user enable <.service>
+systemctl --user start pod-systemd-pod.service
+To perform systemctl actions as a non-root user use the --user flag when interacting with systemctl.
 
+
+podman generate systemd --name bb310a0780ae--new --files --name bb310a0780ae
 TASK2:
   Pull the latest version of the mariadb image from the registry on registry.do180.lab. Run a container in the background with the following parameters:
   Give the container the name of testql
@@ -22,7 +34,7 @@ TASK2:
   MYSQL_ROOT_PASSWORD: SQLp4ss
   MYSQL_DATABASE: beer
   Connect to your database as the root user and check for the existence of the beer database:
-    echo “show databases;” | mysql -uduffman -h 192.168.88.4 -psaysoyeah
+    echo “show databases;” | mysql -h192.168.88.4 -uduffman -psaysoyeah
   Run the command located in /sql/beer.sql to insert values into the database.
     mysql -uroot -h 192.168.88.4 -pSQLp4ss < /sql/beer.sql
 
