@@ -1,5 +1,5 @@
-Create two Podman networks called beeper-backend and beeper-frontend that have DNS enabled.
-  podman network create beeper-backend, beeper-frontend
+1. Create two Podman networks called beeper-backend and beeper-frontend that have DNS enabled.
+  podman network create beeper-backend,beeper-frontend
 Create a PostgreSQL database container that matches the following criteria:
   Use the registry.ocp4.example.com:8443/rhel9/postgresql-13:1 container image.
   Use beeper-db for the name of the container.
@@ -21,7 +21,7 @@ podman run -d --name beeper-db --network beeper-backend -v beeper-data:/var/lib/
   -e POSTGRESQL_DATABASE=beeper \
   registry.ocp4.example.com:8443/rhel9/postgresql-13:1
 
-cd ~/DO188/labs/comprehensive-review/beeper-backend  
+2. cd ~/DO188/labs/comprehensive-review/beeper-backend  
 vi Containerfile
 Create a container image for the Beeper API that matches the following criteria:
 Use a multi-stage build with a builder image to compile the Java application.
@@ -50,7 +50,7 @@ Connect the container to the beeper-backend and beeper-frontend networks.
   --network beeper-backend, beeper-frontend
 Final:  podman run -d --name beeper-api --network beeper-frontend, beeper-backend -e DB_HOST=beeper-db beeper-api:v1
 
-cd ~/DO188/labs/comprehensive-review/beeper-ui
+3. cd ~/DO188/labs/comprehensive-review/beeper-ui
 vi Containfile
 Create a container image for the Beeper UI that matches the following criteria:
 Use a multi-stage build with a builder image to compile the TypeScript React application.
