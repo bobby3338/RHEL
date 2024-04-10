@@ -83,4 +83,27 @@ sssd-tools installed for sssctl command
   publickey: files
   rpc: files
 
+  /etc/pam.conf                     # service type control module-path module-arguments
+  /etc/pam.d/                        # drop in path
+  /etc/pam.d/sshd
+  /etc/security/sepermit.conf        # can only log in in enforcing mode
+  /var/run/nolgoin /etc/noglin       # pam_nologin.so prevents all users other than root from logging in when either of the files exist
+  /etc/motd                          # message of the day
+  man 8 pam_unix
+# sshd verification
+  cat /etc/pam.d/sshd
+    auth  substack  password-auth
+  cat /etc/pam.d/password-auth
+    auth  sufficient  pam_unix.so nullok
+
+  man 8 pam_unix          search nullok
+  sssctl domain-list
+  sssctl user-show admin]
+  authselect list
+    mininal / sssd / winbind
+  authselect show sssd
+  authselect test -a sssd with-mkhomedir with-sudo
+
+
+
 
