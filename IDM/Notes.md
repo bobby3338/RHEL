@@ -57,3 +57,30 @@ IdM domain: Linux, Unix, intergration with active directory
   ipa env
   ipa -vv group-show admins
 ```
+## SSSD / sssctl / sss_cache / sss_override / sss_seed
+```
+nss_ldap 
+pam_krb5
+pam_ccreds
+
+NSS (name service switch )
+authconfig replaced by authselect in RHEl8
+sssd-tools installed for sssctl command
+/etc/nsswitch.conf
+  passwd:     sss files systemd                                                   # sssd is queried before /etc/passwd and /etc/group
+  shadow:     files
+  group:      sss files systemd
+  hosts:      files dns myhostname
+  services:   files sss
+  netgroup:   sss
+  automount:  files sss
+
+  aliases: files
+  ethers: files
+  gshadow: files
+  networks: files dns
+  protocols: files
+  publickey: files
+  rpc: files
+
+
