@@ -107,8 +107,47 @@ sssd-tools installed for sssctl command
   authselect test -a sssd with-mkhomedir with-sudo
 
 # Kerberos Authentication Protocol - secure not sending password over the network
-  Ticket Granting Service / Ticket Granting Ticket / Key Distribution Center
+  Ticket Granting Service / Ticket Granting Ticket / Key Distribution Center / session ticket
+
+# Realm: the uppercase verison of the domain name.
+  Principal: Primary/[instance]@REALM
+keytab: a file containing kerberos credentials
+  klist -ke /etc/krb5.keytab          # -k=list the content, -e=machine-readable format
+
+# Managing Kerberos Principals
+  host/server01.example.com@EXAMPLE.COM
+  HTTP/payroll.example.com@EXAMPLE.COM
+  demo/admin@EXAMPLE.COM
+
+  kadmin.local -x ipa-setup-override-restrictions add_principal -pw principalexample99 example@LAB.EXAMPLE.COM
+  kadmin.local modify_principal -maxrenewlife 10d test
+  kadmin.local -x ipa-setup-override-restrictions delete_principal example
+
+authentication process
+credentialed User: creates own shared key
+kerberized service: obtains own shared key from keytab
+ticket granting service on KDC: obtains own shared key from keytab
+authentication service on kdc: KDC stores shared keys for all principals
+
+Kerberos integrated services
+kinit user
+ssh student@idm
+sudo -i
+kinit admin@LAB.EXAMPLE.COM
+kadmin.local list_principals         
+kadmin.local get_principal admin
+kadmin.local -x ipa-setup-override-restrictions add_principal -pw testprincipal123 test@LAB.EXAMPLE.COM
+kadmin.local -x ipa-setup-override-restrictions delete_principal test
+
+## the public key infrastructure
+  digital certificates use the SSL/TLS proctocol to encryption the data
+  asymmetric-encrypted messages are encoded in a format that cannot be read or understood by an eavesdropper.
+
+  domain validation certificates
+  organization validation certficates
+  extended validation certificates
   
+
 
 
 
