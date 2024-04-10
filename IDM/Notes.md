@@ -97,6 +97,8 @@ sssd-tools installed for sssctl command
     auth  sufficient  pam_unix.so nullok
 
   man 8 pam_unix          search nullok
+  ssh admin@idm
+  su -
   sssctl domain-list
   sssctl user-show admin]
   authselect list
@@ -104,6 +106,9 @@ sssd-tools installed for sssctl command
   authselect show sssd
   authselect test -a sssd with-mkhomedir with-sudo
 
+# Kerberos Authentication Protocol - secure not sending password over the network
+  Ticket Granting Service / Ticket Granting Ticket / Key Distribution Center
+  
 
 
 
