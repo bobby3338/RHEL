@@ -1,4 +1,5 @@
 ##The IdM Infrastructure Topology
+```
   IdM server, IdM replica, support up to 60 replica in single IdM topology
     service SRV record,
   IdM client
@@ -23,7 +24,7 @@ IdM domain: Linux, Unix, intergration with active directory
     DNS server
     Key Recovery Authority Server
     Active Directory controller / trust agent
-
+```
 ```
   ssh idm
   sudo -i
