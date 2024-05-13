@@ -4,3 +4,34 @@ ipa -vv user-show admin
 ipa console
 ipa help command
 ```
+###
+group-add                   Create a new group.
+group-add-member            Add members to a group.
+group-add-member-manager    Add users that can manage members of this group.
+group-del                   Delete group.
+group-detach                Detach a managed group from a user.
+group-find                  Search for groups.
+group-mod                   Modify a group.
+group-remove-member         Remove members from a group.
+group-remove-member-manager Remove users that can manage members of this group.
+group-show                  Display information about a named group.
+...output omitted...
+user-add                    Add a new user.
+user-add-cert               Add one or more certificates to the user entry
+user-add-certmapdata        Add one or more certificate mappings to the user entry.
+user-add-manager            Add a manager to the user entry
+user-add-principal          Add new principal alias to the user entry
+user-del                    Delete a user.
+user-disable                Disable a user account.
+user-enable                 Enable a user account.
+user-find                   Search for users.
+user-mod                    Modify a user.
+user-remove-cert            Remove one or more certificates to the user entry
+user-remove-certmapdata     Remove one or more certificate mappings from the user entry.
+user-remove-manager         Remove a manager to the user entry
+user-remove-principal       Remove principal alias from the user entry
+user-show                   Display information about a user.
+user-stage                  Move deleted user into staged area
+user-status                 Lockout status of a user account
+user-undel                  Undelete a delete user account.
+user-unlock                 Unlock a user account
