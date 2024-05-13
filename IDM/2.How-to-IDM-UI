@@ -1,0 +1,6 @@
+# ipa commands
+---
+ipa -vv user-show admin
+ipa console
+ipa help command
+```
