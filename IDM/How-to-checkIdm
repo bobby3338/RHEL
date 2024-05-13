@@ -1,0 +1,15 @@
+# Check services for IDM topoplogy
+
+```
+ipa-server-install          # check ipa
+systemctl status kadmin          # check kerberos admin
+systemctl status krb5kdc.service          # check key distribution service
+systemctl status dirsrv@LAB-EXAMPLE-COM.service          # check directory service
+systemctl status pki-tomcatd@pki-tomcat.service          # check certificate authority service 
+systemctl status httpd                                   # check httpd
+ipactl status                                            # check all
+rpm -qa | grep ipa                                       # querry all 
+cat /etc/krb5.conf                                       # config for kerberos, domains, servers, realms for kerberos 
+cat /etc/sssd/sssd.conf                                  # system security service daemon config
+systemctl status sssd
+```
