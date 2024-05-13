@@ -4,7 +4,6 @@ ipa -vv user-show admin
 ipa console
 ipa help command
 ```
-###
 group-add                   Create a new group.
 group-add-member            Add members to a group.
 group-add-member-manager    Add users that can manage members of this group.
@@ -35,3 +34,11 @@ user-stage                  Move deleted user into staged area
 user-status                 Lockout status of a user account
 user-undel                  Undelete a delete user account.
 user-unlock                 Unlock a user account
+
+```
+ipa user-add --first=Tim --last=User --password tuser1
+ipa user-find Tim
+ipa user-disable tuser1
+
+ipa env
+ipa -vv group-show admins
