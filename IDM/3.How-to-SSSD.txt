@@ -1,0 +1,10 @@
+Describe the features of the System Security Services Daemon.
+      sssctl / sss_cache / sss_override / sss_seed
+      authconfig replace by authselect since RHEL 8 for preconfigured profiles
+        authselect show sssd
+        authselect list          # minimal / windbind / sssd
+          
+Describe the Name Service Switch.
+      
+      
+Describe the Pluggable Authentication Module (PAM) architecture.
