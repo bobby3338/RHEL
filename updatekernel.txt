@@ -1,0 +1,1 @@
+rpm -ivh kernel-kernel_version.arch.rpm
