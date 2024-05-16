@@ -1,1 +1,3 @@
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/kernel_administration_guide/ch-manually_upgrading_the_kernel
+
 rpm -ivh kernel-kernel_version.arch.rpm
