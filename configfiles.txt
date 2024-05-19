@@ -6,4 +6,11 @@
 
 /etc/krb5kdc.conf
 
-/
+/etc/krb5.conf
+
+/etc/sssd/sssd.conf
+
+/etc/pam.d/sshd
+
+/etc/pam.d/password-auth
+
