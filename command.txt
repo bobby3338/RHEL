@@ -1,1 +1,4 @@
+#rpm 
+rpm -ivh <installpackage> --nogpgkeycheck
+rpm --import https://example.com/path/to/keyfile
 
