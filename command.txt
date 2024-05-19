@@ -1,4 +1,7 @@
 #rpm 
 rpm -ivh <installpackage> --nogpgkeycheck
 rpm --import https://example.com/path/to/keyfile
+rpm -qa | grep ipa
 
+ssh -o PubkeyAuthentication=no -o PreferredAuthentications=password demo@client
+ssh -X user@servera                                                                                   # -X x forwarding
