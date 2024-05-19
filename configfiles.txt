@@ -1,0 +1,9 @@
+/etc/ssh/sshd_config.conf
+
+/etc/bash_profile 
+
+~/.bashrc
+
+/etc/krb5kdc.conf
+
+/
