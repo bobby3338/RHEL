@@ -1,0 +1,31 @@
+ssh idm
+kinit admin
+ipa topologysuffix-find
+    ca / domain
+web ui -> ipa server -> topology -> topologysuffix
+ipa topologysegment-find domain
+ipa topologysegment-add domain server4.example.com-to-server5.example.com --leftnode=server4.example.com --rightnode=server5.example.com
+ipa topologysegement-del domain server4.example.com-to-server5.example.com
+
+ipa-replica-install --hiden-replica
+ipa server-state server.example.com --state=enabled
+ipa server-state server.example.com --state=hidden
+
+ssh idm
+kinit admin
+ipa topologysegment-find domain
+ipa topologysegment-del domain idm.lab.example.com-to-replica1.lab.example.com
+ipa topologysegment-del domain replica-domain-segment // failed not allowed
+sudo dnf install ipa-healthcheck
+
+ipa-healthcheck --list-sources
+ipa-healthcheck --source=ipahealthcheck.ipa.topology --all
+ipa topologysegment-add domain idm.lab.example.com-to-replica1.lab.example.com --leftnode=idm.lab.example.com --rightnode-replica1.lab.example.com
+dig +short _ldap._tcp.lab.example.com SRV
+dig +short _kerberos._tcp.lab.example.com SRV
+ipa config-show
+ipa server-state replica2.lab.example.com --state=hidden
+dig +short _ldap._tcp.lab.example.com SRV
+dig +short _kerberos._tcp.lab.example.com SRV
+ipa server-state replica2.lab.example.com --state=enabled
+
