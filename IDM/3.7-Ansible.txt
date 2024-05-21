@@ -1,0 +1,56 @@
+dnf install ansible-freeipa
+ls /usr/share/doc/ansible-freeipa  // playbook examples
+cat /usr/share/ansible/roles/ipaservers/readme
+
+
+vi hosts
+[ipaserver]
+idm.lab.example.com ansible_become_password=student
+
+[ipaserver:vars]
+ipaserver_domain=lab.example.com
+ipaserver_realm=LAB.EXAMPLE.COM        
+ipaserver_setup_dns=yes
+ipaserver_forwarders=172.25.250.254
+ipaadmin_password=RedHat123^
+ipadm_password=RedHat123^
+
+cp /usr/share/doc/ansible-freeipa/playbooks/installserver.yml
+
+ansible-playbook -i hossts installserver.yml
+
+ssh idm
+kinit admin
+ipa realmdomains-show 
+ipa server-show id.lab.example.com
+sudo -i
+ipactl status
+vi hosts
+[ipaclients]
+client.lab.example.com ansible_become_password=student
+[ipaclients:vars]
+ipaadmin_principal=admin
+ipaadmin_password=RedHat123^
+ipaclient_domain=lab.example.com
+
+cp /usr/share/doc/ansible-freeipa/playbooks/install-client.yml
+ansible-playbook -i hosts install-client.yml
+
+ssh idm
+kinit admin
+ipa host-find
+vi hosts
+[ipareplicas]
+replica1.lab.example.com ansible_become_password=student
+[ipareplicas:vars]
+ipareplica_setup_dns=yes
+ipareplica_forwarders=172.25.250.254
+ipaadmin_principal=admin
+ipaadmin_password=RedHat123^
+
+cp /usr/share/doc/ansible-freeipa/playbooks/install-replica.yml
+ansible-playbook -i hosts install-replica.yml
+ssh idm
+kinit admin
+ipa server-find 
+ipa server-show replica1.lab.example.com
