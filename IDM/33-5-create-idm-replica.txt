@@ -1,0 +1,37 @@
+ssh idm
+kinit admin  / enter password
+ipa dnsrecord-find 
+  lab.example.com
+ipa dnsrecord-add lab.example.com replica1 --a-rec=172.25.250.10
+ipa host-add replica1.lab.example.com
+ipa host-mod replica1.lab.example.com --random  // OTP request
+ipa hostgroup-add-member ipaservers --hosts replica1.lab.example.com
+
+ssh replica1
+sudo -i 
+firewall-cmd --add-service=freeipa-ldap
+firewall-cmd --add-service=freeipa-ldaps
+firewall-cmd --add-service=dns
+firewall-cmd --runtime-to-permanent
+yum install ipa-server ipa-server-dns
+ipa-replica-install --setup-dns --forwarder 172.25.250.254 -p 'OTP'
+ipactl status
+kinit admin / enter password
+ipa server-find 
+ipa server-show replica1.lab.example.com
+ipa service-find | less
+
+ssh replica2
+sudo -i
+firewall-cmd --add-service=freeipa-ldap
+firewall-cmd --add-service=freeipa-ldaps
+firewall-cmd --add-service=dns
+firewall-cmd --runtime-to-permanent
+yum install ipa-server ipa-server-dns
+ipa-replica-install -w 'adminPassword' --setup-dns --forwarder 172.25.250.254
+ipactl status
+kinit admin
+ipa server-find
+ipa server-show replica2.lab.example.com
+ipa service-find | less
+
