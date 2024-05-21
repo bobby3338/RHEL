@@ -1,0 +1,17 @@
+ssh idm
+kinit admin
+ipa server-find
+ipa host-find
+
+ssh workstation
+vi hosts
+[ipareplicas]
+replica2.lab.example.com
+ansible-playbook -i hosts install-cluster.yml --list-hosts
+ansible-playbook -i hosts install-cluster.yml --limit replica2.lab.example.com
+ssh idm
+kinit admin
+ipa server-show replica2.lab.example.com
+ipa dnsrecord-show lab.example.com replica2
+ssh replica2
+sudo ipactl status
