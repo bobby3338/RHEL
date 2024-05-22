@@ -14,3 +14,17 @@ ipa-server-install --uninstall
 ipa-replica-manage list-ruv / replica update vector to view 
   server.example.com:389: 9
 ipa-replica-manage clean-ruv 9
+
+ssh idm
+kinit admin
+ipa config-show
+ipa server-show replica1.lab.example.com
+ssh replica1
+sudo -i
+ipa-ca-install // input password
+
+ssh idm
+kinit admin
+ipa server-show replica1.lab.example.com
+ipa server-find --servrole "CA server"
+ipa topologysegment-find ca
