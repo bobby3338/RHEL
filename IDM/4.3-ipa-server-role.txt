@@ -1,0 +1,16 @@
+CA Server - certmonger / DNS server / Active Directory - trust/controller / 
+web ui -> ipa server -> server roles
+ssh idm
+ipa config-show
+ipa server-show idm.lab.example.com
+ipa server-find --servrole "DNS server"
+ipa-dns-install  // add dns role
+ipa-kra-install 
+ipa-ca-install
+
+ipa server-del -> server1.example.com
+ipa-server-install --uninstall
+
+ipa-replica-manage list-ruv / replica update vector to view 
+  server.example.com:389: 9
+ipa-replica-manage clean-ruv 9
