@@ -1,0 +1,27 @@
+ssh idm
+kinit admin
+ipa server-del
+ssh replica1
+sudo ipa-server-install --uninstall
+
+ssh idm
+kinit admin
+ipa config-show
+ipa topologysegment-find domain
+ipa topologysegment-find ca
+ssh replica1
+sudo -i
+dnf install ipa-server
+firewall-cmd --list-all
+nnmcli con show "System eth0: | grep ipv4.dns
+dig idm.lab.example.com
+ipa-replica-install --admin-password RedHat123^
+ssh idm
+ipa config-show
+ipa topologysegment-find domain
+ipa topologysegment-add domain replica1.lab.example.com-to-replica2.lab.example.com --leftnode=replica1.lab.example.com --rightnode=replica2.lab.example.com
+ssh replica1
+ipa-dns-install / input configurations
+kinit admin
+ipa config-show | grep replica1
+
