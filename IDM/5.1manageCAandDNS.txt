@@ -1,0 +1,31 @@
+semanage fcontext -a -t cert_t "/etc/httpd/certs(/.*)?"
+### ###
+ipa-getcert request -f /etc/httpd/certs/intranet.pem -k /etc/httpd/certs/intranet.key -k http/intranet.example.com -D intranet.example.com
+###  ###
+certutil -R -d ~/certdb/ -a -g 4096 -n intranet -s "CN=intranet, O=EXAMPLE.COM' > ~/intranet.csr
+  -R request -d Directory -a ASCII -g size of the encryption -n nickname -s subject 
+###  ###
+certutil -N -d ~/certdb/
+  -N initialize a new database -d directory
+### #### 
+openssl req -out ~/intranet.csr -new -newkey rsa:2048 -node -sha256 -keyout ~/intranet.key
+
+### to sign the csr ###
+ipa cert-request intranet.csr --principal=host/server.example.com
+
+### renew a certificate requires access to the existing private keyy ###
+ipa-getcert request -f /etc/httpd/intranet.pem -k /etc/httpd/intranet.key -K http/intranet.example.com -D intranet.example.com
+
+### renew a certificate, use the certutil -R -k ###
+certutil -R -d ~/certdb/ -a -g 4096 -k "NSS Certificate DB:intranet" -s "CN=intranet, O=EXAMPLE.COM" > ~/intranet.csr
+###  
+openssl req -new -out ~/intranet.csr -key ~/intranet.key
+### 
+ipa cert-request intranet.csr --principal=host/server.example.com
+
+ipa user-remove-cert demouser --certificate="..."
+
+openssl x509 -inform PEM -outform DER < cert.pem | base64 > cert.b64
+
+ipa cert-revoke 21 --revocation-reason=4
+
