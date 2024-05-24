@@ -1,0 +1,33 @@
+ipa privilege-find
+### role-based access control ###
+ipa automember-add
+ssh-keygen -t rsa -C idmuser@lab.example.com
+ipa user-mod idmuser --sshpubkey="$(cat ~/.ssh/id_rsa.pub)"
+
+~/.ssh/ssh_authorized_keys
+
+ssh idm
+kinit admin
+ipa role-add --desc "Role for Provisioning Users" "User Provisioning"
+ipa role-add-privilege "User Provisioning" --privileges="User Administrators"
+ipa role-add-member "User Provisioning" --users=idmuser01
+ipa role-show "User Privisioning"
+ipa group-add idmgroup05
+ipa group-del idmgroup05
+ipa group-add idmgroup05 --desc "Auto Membership Group"
+ipa pwpolicy-add idmgroup05 --minlength 8 --priority 0 --maxfail 2
+ipa automember-add idmgroup05 --type="group" --desc="Auto Member Rule for idmgroup05"
+ipa automember-add-condition 
+  idmgroup05
+    uid
+      group
+inclusion  ^idmuser.*
+exclusion
+
+ipa automember-add-condition
+  idmgroup05
+    objectclass
+      group
+        ntuser
+ipa automember-rebuild --type=group 
+ipa group-show idmgroup05
