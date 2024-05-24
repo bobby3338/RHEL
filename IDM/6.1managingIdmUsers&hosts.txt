@@ -31,3 +31,7 @@ ipa automember-add-condition
         ntuser
 ipa automember-rebuild --type=group 
 ipa group-show idmgroup05
+ssh -o PubkeyAuthentication=no idmuser06@client
+env | grep -i shell
+ipa user-status idmuser06
+ssh -i imduser06-key idmuser06@client
