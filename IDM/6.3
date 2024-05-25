@@ -42,3 +42,15 @@ accessing: client
 via service: httpd
 rules: allow_remote_access
 run test: access denied / granted
+ssh idm
+kinit amdin
+ipa role-add --desc="Group Administrator" groupadmin
+ipa role-add-privileges="Group Administrators" groupadmin
+ipa role-add-member --groups=idmgroup02 groupadmin 
+
+sudo:
+sudo command: /sbin/reboot
+sudo rules: reboot_client
+  who: idmuser01
+  access this host: client
+  command: /sbin/reboot
