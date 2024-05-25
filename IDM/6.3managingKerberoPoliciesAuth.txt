@@ -1,5 +1,0 @@
-Principal:
-  user / host /service
-service-type/hostname@REALM
-HTTP/NFS/LDAP
-HTTP/intranet.example.com@EXAMPLE.COM

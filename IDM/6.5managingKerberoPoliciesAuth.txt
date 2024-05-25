@@ -1,0 +1,21 @@
+Principal:
+  user / host /service
+service-type/hostname@REALM
+HTTP/NFS/LDAP
+HTTP/intranet.example.com@EXAMPLE.COM
+/etc/krb5.keytab
+
+download the keytab, invalidating any previously downloaded keytabs
+ipa-getkeytab -s server.example.com -p HTTP/intranet.example.com -k /etc/httpd/conf/intranet.keytab
+ipa service-show HTTP/intranet.example.com  // check
+ipa service-disable HTTP/intranet.example.com  // disabling
+ipa service-show HTTP/intranet.example.com  // false
+request for new keytab 
+ipa-getkeytab -s server.example.com -p HTTP/intranet.example.com -k /etc/httpd/conf/intranet.keytab
+
+delegating service management
+kinit -kt /etc/krb5.keytab host/$(hostname) // authentication through host principal
+kinit -kt /etc/krb5.keytab host/client.lab.example.com
+ipa-getkeytab -s idm.lab.example.com -k utility.keytab -p HTTP/utility.lab.example.com
+
+
