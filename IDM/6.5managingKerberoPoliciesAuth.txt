@@ -18,4 +18,14 @@ kinit -kt /etc/krb5.keytab host/$(hostname) // authentication through host princ
 kinit -kt /etc/krb5.keytab host/client.lab.example.com
 ipa-getkeytab -s idm.lab.example.com -k utility.keytab -p HTTP/utility.lab.example.com
 
+kerberos AES stored in KDC, kerberos ticketing policy
+ipa krbtpolicy-mod [userid] --maxrenew=seconds --maxlife=seconds
+OK_AS_DELEGATE -> AD 
+OK_TO_AUTH_AS DELEGATE -> 
+REQUIRES_PRE_AUTH: mitigate offline password cracking, enabled by default
+ipad service-mod HTTP/intranet.example.com/EXAMPLE.COM --ok-as-delegate=1
+kadmin.local  // current options set for a service principal
+rekeying credentials for service or host principals
+ipa-getkeytab -p HTTP/intranet.example.com@EXAMPLE.COM -s server.example.com -k /etc/httpd/conf/intranet.keytab
+
 
