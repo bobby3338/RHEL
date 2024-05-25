@@ -1,2 +1,44 @@
 ### Host base access control ###
+who / accessing / via service
+web ui:
+sudo rules
+add sudo rules -> name: reboot -> options / who / access this host / run commands -> allow/deny /sbin/reboot -> as whom /users/groups 
 
+actor -> target -> operation type
+
+role-based access control
+self-service 
+ipa selfservice-add "Users can manage their own name details" --permissions=write --attrs=givenname --attrs=displayname --attrs=title --attrs=initials
+delegation 
+ipa delegation-add "basic manager attrs" --attrs=manager --attrs=title --attrs=employeetype --attrs=employeenumber --group=engineering_managers --membergroup=engineering
+
+ipa role-add --desc="role_description" role_name
+ipa role-privilege --privilege="privilege" role_name
+
+ipa role-add-member --group="group_name" role_name
+
+HBAC rule
+allow_remote_access
+who: add user: idmuser01, idmuser03, idmuser04
+accessing: client.lab.example.com
+via service: ftp, vsftpd, sshd
+allow_all: disabled
+
+HBAC service:
+add HBAC service: httpd
+
+HBAC service group: web access
+add: httpd
+
+HBAC rules:
+add: allow_web
+add: idmuser01
+accessing: any hosts
+via service: web access
+
+HBAC test:
+who: idmuser03
+accessing: client
+via service: httpd
+rules: allow_remote_access
+run test: access denied / granted
