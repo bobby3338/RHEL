@@ -27,5 +27,5 @@ ipad service-mod HTTP/intranet.example.com/EXAMPLE.COM --ok-as-delegate=1
 kadmin.local  // current options set for a service principal
 rekeying credentials for service or host principals
 ipa-getkeytab -p HTTP/intranet.example.com@EXAMPLE.COM -s server.example.com -k /etc/httpd/conf/intranet.keytab
-
+klist -kt /etc/httpd/conf/intranet.keytab
 
