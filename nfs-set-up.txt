@@ -1,0 +1,87 @@
+Reports Server
+-------------------------------------------------------
+
+Step 0 - Login as bash
+
+      $ sudo bash
+
+
+Step 1 - Check nfs-utils
+
+      $ yum list installed | grep nfs-utils
+      nfs-utils.x86_64                 1:1.3.0-0.68.el7.2          @rhel-7-server-rpms
+
+
+      If not installed, execute below ...
+      $ sudo yum install -y nfs-utils
+
+
+Step 2 - Enable and Start NFS Server
+      $ systemctl enable rpcbind
+      $ systemctl start rpcbind
+      $ systemctl enable nfs-server
+      $ systemctl start nfs-server
+
+
+Step 3 - Create Shared Directory
+
+      $ mkdir -p /opt/app/ReportsOutputs
+      $ cd /
+      $ mkdir ReportsOutputs
+
+      $ chown oracle:oracle /opt/app/ReportsOutputs
+      $ chown oracle:oracle /ReportsOutputs
+      $ chown 755 /opt/app/ReportsOutputs
+      $ chmod 755 /ReportsOutputs
+
+
+Step 4 - Edit /etc/exports
+
+      /opt/app/ReportsOutputs <JBoss Server IP>(rw,sync,no_root_squash,no_subtree_check)
+      
+
+Step 5 - Export Shared Directories
+
+      $ exportfs -a
+
+
+
+JBoss Server
+---------------------------------------------
+Step 0 - Login as bash
+
+      $ sudo bash
+
+
+Step 1 - Check nfs-utils
+
+      $ yum list installed | grep nfs-utils
+      nfs-utils.x86_64                 1:1.3.0-0.68.el7.2          @rhel-7-server-rpms
+
+
+      If not installed, execute below ...
+      $ yum install -y nfs-utils
+
+
+Step 2 - Enable and Start NFS Server
+      $ systemctl enable rpcbind
+      $ systemctl start rpcbind
+      $ systemctl enable nfs-server
+      $ systemctl start nfs-server
+
+
+Step 3 - Create Shared Directory
+
+      $ cd /
+      $ mkdir ReportsOutputs
+      $ chown oracle:oracle ReportsOutputs
+
+
+Step 4 - Modify /etc/fstab
+
+      <Report Server IP>:/opt/app/ReportsOutputs /ReportsOutputs nfs defaults,rw,nosuid,nodev 0 0     
+
+
+Step 5 - Mount Shared Directory
+
+      $ mount -a
