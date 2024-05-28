@@ -1,0 +1,134 @@
+-- RHEL 8 Configuration changes required on T74L1387D03 to install Oracle 19c
+--
+
+1. Create group oinstall 
+	
+2. Create user oracle with oinstall as primary group and C shell as it's default shell
+		
+3. Change permissions on /opt/app to 755
+
+4. Change owner:group of /opt/app/voled and it's subdirectories to oracle:oinstall
+	
+5. Set umask to 022 in /export/home/oracle.cshrc for the duration of the install*
+	
+6. Remove noexec, in etc/fstab for /dev/mapper/VG00-TMP for the duration of the install*
+		
+	***NOTE: requires remount for change to take effect. Check mount -l if installer won't execute.
+
+7. Enable X11 forwarding for the duration of the install*
+	make sure X11Forwarding yes is in file /etc/ssh/sshd_config and is not commented out
+
+8. Prevent session timeout for the duration of the install and disable TMUX*
+
+9. Open port 1521 in the firewall
+
+10. Enable the cron service 
+
+11. Disable fapolicyd. This service must be disabled for xterm to run in RHEL 8. The installer will not run if fapolicyd is enabled.
+
+12. Add "session required pam_limits.so" to /etc/pam.d/login
+
+13. Set DISPLAY to 10     # export DISPLAY=:10
+
+	> echo $DISPLAY should display 10 or 10.0
+	
+14. Install packages required for Oracle 19c.
+
+	To install required packages:
+
+	> yum install -y install oracle_database-preinstall-19c
+	
+15. Verify kernel parameters.
+
+	-- The file /etc/sysctl.d/97-oracle-database-sysctl.conf should be created by the previous step.
+	   If not, manually create it.
+	-- The following settings should be in /etc/sysctl.d/97-oracle-database-sysctl.conf
+
+	kernel.sem = 250 32000 100 128
+	kernel.shmmni = 4096
+	kernel.shmmax = 37580963840  (must be half of total RAM)
+	kernel.shmall = 37580963840  (must be half of total RAM)
+	fs.file-max = 6815744
+	fs.aio-max-nr = 1048576
+	net.ipv4.ip_local_port_range = 9000 65500
+	#net.ipv6.ip_local_port_range="9000 65500"
+	net.core.rmem_default = 262144
+	net.core.rmem_max = 4194304
+	net.core.wmem_default = 262144
+	net.core.wmem_max = 1048586
+	vm.nr_hugepages = 2050
+	
+
+*These parameters must be reset to their original values after the install because they are STIG violations
+
+5. Set umask to 022 in /export/home/oracle/.cshrc for the duration of the install*
+	NOTE: setting was modified for /home. /export/home will not exist in RHEL
+ 
+ 
+6. Remove noexec, in etc/fstab for /dev/mapper/VG00-TMP for the duration of the install*
+7. Enable X11 forwarding for the duration of the install*
+8. Prevent session timeout for the duration of the install and disable TMUX*
+	NOTE: reminder to request #5,6,7,8 be reverted post install
+ 
+ 
+12. Add "session required pam_limits.so" to /etc/pam.d/login
+	NOTE: this is already satisfied and called in login:
+	/etc/pam.d/login includes the following line:
+	session    include      system-auth
+	And the requested pam entry is in system-auth:
+	[root@home]# grep pam_limits.so /etc/pam.d/system-auth
+	session     required    pam_limits.so
+ 
+ 
+14. Install packages required for Oracle 19c.
+> yum install -y install oracle_database-preinstall-19c
+	NOTE: I cannot find this installation package. It is not available from redhat repos that we have enabled.
+ 
+ 
+11. Disable fapolicyd. This service must be disabled for xterm to run in RHEL 8. The installer will not run if fapolicyd is enabled.
+	NOTE: fapolicyd is enforced by DISA STIG. I did not disable it. We here at dc2hs run oracle installers for our DB team after whitelisting the application in the fapolicyd rules. I have added rules/whitelists that should work. However, if there are 'operation not permitted' errors, please let me know the commands you are running and as what user. I can in turn run these through the fapolicyd debug and add any additional whitelists that are necessary. Once we have a satisfactory configuration outlined, it can be mass configured on any future node.
+
+The following packages are listed as required.
+
+dnf install -y bc    
+dnf install -y binutils
+#dnf install -y compat-libcap1
+dnf install -y compat-libstdc++-33
+#dnf install -y dtrace-modules
+#dnf install -y dtrace-modules-headers
+#dnf install -y dtrace-modules-provider-headers
+#dnf install -y dtrace-utils
+dnf install -y elfutils-libelf
+dnf install -y elfutils-libelf-devel
+dnf install -y fontconfig-devel
+dnf install -y glibc
+dnf install -y glibc-devel
+dnf install -y ksh
+dnf install -y libaio
+dnf install -y libaio-devel
+#dnf install -y libdtrace-ctf-devel
+dnf install -y libXrender
+dnf install -y libXrender-devel
+dnf install -y libX11
+dnf install -y libXau
+dnf install -y libXi
+dnf install -y libXtst
+dnf install -y libgcc
+dnf install -y librdmacm-devel
+dnf install -y libstdc++
+dnf install -y libstdc++-devel
+dnf install -y libxcb
+dnf install -y make
+dnf install -y net-tools # Clusterware
+dnf install -y nfs-utils # ACFS
+dnf install -y python # ACFS
+dnf install -y python-configshell # ACFS
+dnf install -y python-rtslib # ACFS
+dnf install -y python-six # ACFS
+dnf install -y targetcli # ACFS
+dnf install -y smartmontools
+dnf install -y sysstat
+dnf install -y libnsl
+dnf install -y libnsl.i686
+dnf install -y libnsl2
+dnf install -y libnsl2.i686
